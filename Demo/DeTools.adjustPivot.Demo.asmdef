@@ -1,0 +1,17 @@
+{
+    "name": "DeTools.adjustPivot.Demo",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4d19d31884d433b48857a17d6dae4b1e",
+        "GUID:9e98e36b2bcc8214f87f7accf1b11cb6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
