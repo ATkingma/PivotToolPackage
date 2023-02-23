@@ -1,53 +1,40 @@
-Pivot Adjust 
+The spelling appears to be correct. However, there are some grammar and punctuation errors that could be corrected for clarity and readability. Here's a revised version:
 
-Online forum available at:https://answers.unity.com/questions/1932735/form-of-detools-pivot-tool.html
+Pivot Adjust
+
+Online forum available at: https://answers.unity.com/questions/1932735/form-of-detools-pivot-tool.html
 E-mail: detoolsassetstore@gmail.com
 
-1. Tool Flow:
+Tool Flow:
+a. Hold your mouse on the top left window tab.
+b. Open the pivot tool tab.
+c. Select a game object with a mesh filter.
+d. Follow step 3.
+e. Follow step 4.
 
-a. hold ur mouse on the top left window tab.
+ABOUT
+This tool helps you change the pivot point of an object without having to create an empty parent object as the pivot point. There is one way of adjusting the pivot:
+a. If the object has a mesh filter, then the script first creates an instance of the mesh, adjusts the mesh's pivot point by altering its vertices, normals, and tangents, and finally changes the position of the currently selected game object.
 
-b. open the pivot tool tab.
+HOW TO SET THE PIVOT (THERE ARE MULTIPLE WAYS TO SET THE PIVOT POINT):
+A. To change an object's pivot point, enable the tool with the button "Enable Gizmo" or the button "/", and move the handle to the desired pivot position. Then, press the "Set New Pivot" button, and the pivot will be set.
 
-c. select an gameobject with an mesh filter.
+B. You can also move the pivot at the Move Pivot tab. Here are some sliders that can be moved in the x, y, z directions. You can change the value of the slider scale at the Settings tab. Then, if you have your new pivot position, you can press the "Set Pivot Position" button.
 
-d. follow the step 3.
+C. You can use the center button to center the pivot at the center of the currently selected mesh. Then, set the pivot with the "Set Pivot" button.
 
-e. follow step 4.
+D. There is a last feature that is multiple pivot tool. This uses more than 2 GUI handles, and the center of the amount of GUI handles will be calculated. If you have the desired position, you can press the "Set Pivot Position" button.
 
-2. ABOUT
-This tool helps you change the pivot point of an object without having to create an empty parent object as the pivot point. there is one way of adjusting the pivot:
+EXPORTING
+You can export the mesh as the following file types:
+Asset (.asset)
+FBX (.fbx)
+OBJ (.obj)
+STL (.stl)
+SUGGESTIONS
+I've got some future plans for the tool, but I need more time for this. If you have some suggestions, you can email me at the email at the top of the text.
+For the future:
 
-a. If the object does have a meshFilter, then the script first creates an instance of the mesh, adjusts the mesh's pivot point by altering its vertices, normals and tangents, and finally changes the position of the current selected GameObject.
-
-
-
-3. HOW TO set the pivot (there are multiple ways to set the pivot point):
-
-A. To change an object's pivot point, enable the tool with the button "Enable Gizmo" or the button "/" and move the handle to the desired pivot position. Then, press the "set new pivot" button and the pivot wil be set.
-
-B. you can also move the pivot at the movePivot tab here are some sliders that can be moved in the x,y,z directions you can changes the value of the slider scale at the settings tab. and then if u got your new pivot position you can press the set pivot position button.
-
-C. you use the center button to center the pivot at the center of the current selected mesh. and then set the pivot with the set pivot button.
-
-D. there is an last feature that is multiple pivot tool this uses more then 2 gui handles and the center of the amount of gui handles wil be calculated and if u got the desired position you can press on the set pivot position.
-
-
-
-4. Exporting
-
-you can export the mesh as the following file types:
-
--asset (.asset)
--fbx (.fbx)
--obj (.obj)
--stl (.stl)
-
-5. Suggestions
-
-Ive got some future plans for the tool but I need more time for this if you have some suggestions you can email me at the email at the top of the txt.
-
-for the future:
- -collider bug fixes
- -support for skinned mesh renderers
- -2d support
+Collider bug fixes
+Support for skinned mesh renderers
+2D support

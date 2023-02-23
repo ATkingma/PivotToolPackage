@@ -1,6 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 
+namespace DeTools.PivotTool.Export
+{
 	/// <summary>
 	/// the supported files that can be saved
 	/// </summary>
@@ -12,7 +14,7 @@ using UnityEngine;
 		fbx = 3,
 		stl = 4,
 	}
-
+}
 namespace DeTools.PivotTool.Export
 {
 	/// <summary>
