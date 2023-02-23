@@ -25,7 +25,7 @@ namespace DeTools.PivotTool.Service
         private static List<Vector3> redoPositions = new List<Vector3>();
 
         /// <summary>
-        /// Ressets the list of positions
+        /// Resets the list of positions
         /// </summary>
         public static void ResetSaved()
         {

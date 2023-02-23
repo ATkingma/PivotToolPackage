@@ -121,7 +121,11 @@ namespace DeTools.PivotTool.Handlers
 				{
 					return;
 				}
-
+				if (!Selection.activeTransform.GetComponent<MeshFilter>())
+				{
+					Debug.LogError("Please add an MeshFilter to the object");
+					return;
+				}
 				UndoRedoPivot.AddNewPivot(Selection.activeTransform.GetComponent<MeshFilter>().sharedMesh);
 			}
 			else

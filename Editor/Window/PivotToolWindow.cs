@@ -20,7 +20,7 @@ namespace DeTools.PivotTool.Window
         /// <summary>
         /// string of the tool name
         /// </summary>
-        const string ToolName = "PivotTool";
+        const string ToolName = "Pivot Adjuster";
 
         /// <summary>
         /// height of the tool that may be drawn this is the min the max will be calculated with the maxMultiplication

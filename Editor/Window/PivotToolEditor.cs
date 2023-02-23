@@ -1,6 +1,7 @@
 using DeTools.PivotTool.Handlers;
 using DeTools.PivotTool.Service;
 using DeTools.PivotTool.UIVieuwer;
+using DeTools.PivotTool.UIViewer;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace DeTools.PivotTool.Window
 		/// <summary>
 		/// string of the header of the main category
 		/// </summary>
-		const string headerTool = "PivotTool";
+		const string headerTool = "Pivot Adjuster";
         /// <summary>
         /// string of the sub category 1
         /// </summary>
@@ -147,7 +148,7 @@ namespace DeTools.PivotTool.Window
 					PivotSettings.DrawUI();
 					break;
 				case 3:
-					PivotExplenation.DrawUI();
+                    PivotExplanation.DrawUI();
 					break;
 			}
 		}
