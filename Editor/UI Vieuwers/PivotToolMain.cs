@@ -88,9 +88,12 @@ namespace DeTools.PivotTool.UIVieuwer
 
 			if (GUILayout.Button(buttonState + ButtonText))
 			{
-				PositionHandle.showPositionTool = !PositionHandle.showPositionTool;
-				PositionHandle.ResetValues();
-				PositionHandle.targetPosition = Selection.activeTransform.position;
+				if (Selection.activeTransform != null)
+				{
+					PositionHandle.showPositionTool = !PositionHandle.showPositionTool;
+					PositionHandle.ResetValues();
+					PositionHandle.targetPosition = Selection.activeTransform.position;
+				}
 			}
 		}
 
