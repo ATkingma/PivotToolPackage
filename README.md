@@ -31,6 +31,10 @@ Asset (.asset)
 FBX (.fbx)
 OBJ (.obj)
 STL (.stl)
+
+ROTATION(NEW FEATURE!)
+There is a new feature available that enables you to rotate the pivot. To access this feature, use the Gizmo located in the "PivotTool" tab on the main page. Once there, activate the rotation function using the designated button. Please note that this button only appears when you have also enabled the Gizmo. Additionally, you can adjust the rotation further in the "Utilities" tab.
+
 SUGGESTIONS
 I've got some future plans for the tool, but I need more time for this. If you have some suggestions, you can email me at the email at the top of the text.
 For the future:

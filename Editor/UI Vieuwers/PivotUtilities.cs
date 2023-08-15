@@ -9,7 +9,7 @@ namespace DeTools.PivotTool.UIVieuwer
 	/// <summary>
 	/// PivotMovement contains the ui tab that manages the position of the pivot by sliders or other calculations
 	/// </summary>
-	public class PivotUtilities
+	public class PivotUtilitys
 	{
 		/// <summary>
 		/// is an string that contains "ResetPosition"

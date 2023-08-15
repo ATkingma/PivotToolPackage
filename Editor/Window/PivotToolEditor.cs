@@ -18,7 +18,7 @@ namespace DeTools.PivotTool.Window
         /// <summary>
         /// string of the sub category 1
         /// </summary>
-        const string category1 = "Utilitys";
+        const string category1 = "Utilities";
         /// <summary>
         /// string of the sub category 2
         /// </summary>
