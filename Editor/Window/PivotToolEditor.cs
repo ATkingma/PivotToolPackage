@@ -181,7 +181,6 @@ namespace DeTools.PivotTool.Window
 			{
 				if (e.character.ToString() == toggleInput)
 				{
-					PositionHandle.ShowPositionTool = !PositionHandle.ShowPositionTool;
 					PositionHandle.ResetPosition();
 					PositionHandle.ResetRotation();
 					PositionHandle.TargetPosition = Selection.activeTransform.position;
@@ -191,13 +190,15 @@ namespace DeTools.PivotTool.Window
 				{
 					UndoRedoPivot.AddNewPivot(Selection.activeTransform.GetComponent<MeshFilter>().sharedMesh);
 					PivotService.SetnewMesh(UndoRedoPivot.GetOldPivot());
+					Debug.Log(undoPivotInput);
 				}
 
 				if (e.character.ToString() == redoPivotInput)
 				{
 					UndoRedoPivot.AddOldPivot(Selection.activeTransform.GetComponent<MeshFilter>().sharedMesh);
 					PivotService.SetnewMesh(UndoRedoPivot.GetNewPivot());
-				}
+                    Debug.Log(redoPivotInput);
+                }
 				
 			}
 		}
