@@ -26,7 +26,7 @@ namespace DeTools.PivotTool.Export
 			GameObject tempobject = new GameObject();
 			tempobject.name = tempObjectName;
 			var meshfilter = tempobject.AddComponent<MeshFilter>();
-			meshfilter.sharedMesh = _meshFilter.mesh;
+			meshfilter.sharedMesh = _meshFilter.sharedMesh;
 			var shader = Shader.Find(shaderType);
 
 			FBXExporter.ExportGameObjToFBX(tempobject, filePath, false, false);

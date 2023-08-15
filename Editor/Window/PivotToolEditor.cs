@@ -1,7 +1,6 @@
 using DeTools.PivotTool.Handlers;
 using DeTools.PivotTool.Service;
 using DeTools.PivotTool.UIVieuwer;
-using DeTools.PivotTool.UIViewer;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,11 +14,11 @@ namespace DeTools.PivotTool.Window
 		/// <summary>
 		/// string of the header of the main category
 		/// </summary>
-		const string headerTool = "Pivot Adjuster";
+		const string headerTool = "PivotTool";
         /// <summary>
         /// string of the sub category 1
         /// </summary>
-        const string category1 = "Pivot Movement";
+        const string category1 = "Utilitys";
         /// <summary>
         /// string of the sub category 2
         /// </summary>
@@ -29,10 +28,20 @@ namespace DeTools.PivotTool.Window
         /// </summary>
         const string category3 = "Explanation";
 
-        /// <summary>
-        /// input string for toggle input check
-        /// </summary>
-        const string toggleInput = "/";
+		/// <summary>
+		/// string of the sub category 3
+		/// </summary>
+		private string category4 = PositionHandle.ShowPositionTool? "Turn Off" : "Turn On";
+
+		/// <summary>
+		/// string of the sub category 3
+		/// </summary>
+		public string Category4 => category4;
+
+		/// <summary>
+		/// input string for toggle input check
+		/// </summary>
+		const string toggleInput = "/";
 		/// <summary>
 		/// input string for redoing the pivot location
 		/// </summary>
@@ -74,7 +83,7 @@ namespace DeTools.PivotTool.Window
 		{
 			UndoRedoPivot.ResetSaved();
 			UndoRedoPosition.ResetSaved();
-			PositionHandle.showPositionTool = false;
+			PositionHandle.ShowPositionTool = false;
 			MultiplePositionHandle.EnableMultiPivot = false;
 			Tools.hidden = false;
 		}
@@ -126,6 +135,13 @@ namespace DeTools.PivotTool.Window
 			if (GUILayout.Button(category3))
 			{
 				tabSelected = 3;
+			}	
+			
+			GUI.backgroundColor = PositionHandle.ShowPositionTool ? Color.white : Color.gray;
+			if (GUILayout.Button(category4))
+			{
+				PositionHandle.ShowPositionTool = !PositionHandle.ShowPositionTool;
+				category4  = PositionHandle.ShowPositionTool ? "Turn Off" : "Turn On";
 			}
 		}
 
@@ -141,14 +157,15 @@ namespace DeTools.PivotTool.Window
 					PivotToolMain.DrawUI();
 					break;
 				case 1:
-					PositionHandle.showPositionTool = true;
-					PivotMovement.DrawUI();
+					PositionHandle.ShowPositionTool = true;
+					category4 = PositionHandle.ShowPositionTool ? "Turn Off" : "Turn On";
+					PivotUtilitys.DrawUI();
 					break;
 				case 2:
 					PivotSettings.DrawUI();
 					break;
 				case 3:
-                    PivotExplanation.DrawUI();
+					PivotExplenation.DrawUI();
 					break;
 			}
 		}
@@ -164,9 +181,10 @@ namespace DeTools.PivotTool.Window
 			{
 				if (e.character.ToString() == toggleInput)
 				{
-					PositionHandle.showPositionTool = !PositionHandle.showPositionTool;
-					PositionHandle.ResetValues();
-					PositionHandle.targetPosition = Selection.activeTransform.position;
+					PositionHandle.ShowPositionTool = !PositionHandle.ShowPositionTool;
+					PositionHandle.ResetPosition();
+					PositionHandle.ResetRotation();
+					PositionHandle.TargetPosition = Selection.activeTransform.position;
 				}
 
 				if (e.character.ToString() == undoPivotInput)

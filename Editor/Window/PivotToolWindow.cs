@@ -20,7 +20,7 @@ namespace DeTools.PivotTool.Window
         /// <summary>
         /// string of the tool name
         /// </summary>
-        const string ToolName = "Pivot Adjuster";
+        const string ToolName = "PivotTool";
 
         /// <summary>
         /// height of the tool that may be drawn this is the min the max will be calculated with the maxMultiplication
@@ -42,8 +42,9 @@ namespace DeTools.PivotTool.Window
 		{
 			PivotToolEditor window = GetWindow<PivotToolEditor>();
 			window.titleContent = new GUIContent(ToolName);
-			window.minSize = new Vector2(width, height);
+			window.minSize = new Vector2(width * maxMultiplication, height * maxMultiplication);
 			window.maxSize = new Vector2(width * maxMultiplication, height * maxMultiplication);
+			window.minSize = new Vector2(width, height);
 			window.Show();
 		}
     }

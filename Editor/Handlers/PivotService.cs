@@ -1,8 +1,8 @@
 using DeTools.PivotTool.Export;
 using DeTools.PivotTool.Handlers;
+using DeTools.PivotTool.UIVieuwer;
 using UnityEditor;
 using UnityEngine;
-using Transform = UnityEngine.Transform;
 
 namespace DeTools.PivotTool.Service
 {
@@ -15,20 +15,20 @@ namespace DeTools.PivotTool.Service
 		/// 
 		/// </summary>
 		const string UNDO_ADJUST_PIVOT = "Move Pivot";
-        /// <summary>
-        /// string that contains (Clone) this is what needs to be replaced in the mesh name with copyString
-        /// </summary>
-        const string cloneString = "(Clone)";
-        /// <summary>
-        /// string that contains (Copy) that what replaces the mesh cloneString
-        /// </summary>
-        const string copyString = "(Copy)";
+		/// <summary>
+		/// string that contains (Clone) this is what needs to be replaced in the mesh name with copyString
+		/// </summary>
+		const string cloneString = "(Clone)";
+		/// <summary>
+		/// string that contains (Copy) that what replaces the mesh cloneString
+		/// </summary>
+		const string copyString = "(Copy)";
 
 		/// <summary>
 		/// this is the general call for setting an new pivot and also calls SetMeshInfo and SetChildInfo
 		/// </summary>
 		/// <param name="pivotPosition"></param>
-		public static void SetPivot(Vector3 pivotPosition, bool centerCollider,bool centerNavmesh)
+		public static void SetPivot(Vector3 pivotPosition,Quaternion pivotRotation)
 		{
 			Transform SelectedObject = Selection.activeTransform;
 			Vector3 oldpos = SelectedObject.position;
@@ -55,18 +55,20 @@ namespace DeTools.PivotTool.Service
 				Undo.RecordObject(meshFilter, UNDO_ADJUST_PIVOT);
 
 				SetMeshInfo(meshFilter, pivotPosition);
+				SetMeshRotation(meshFilter, pivotRotation);
 			}
 
 			SetChildInfo(SelectedObject);
 			UndoRedoPivot.AddOldPivot(meshFilter.sharedMesh);
 			SelectedObject.position = pivotPosition + oldpos;
 
-			if (centerCollider)
+
+			if (PivotSettings.centerCollider)
 			{
-				ColliderHandle.SetColliderCenter(SelectedObject,meshFilter);
+				ColliderHandle.SetColliderCenter(SelectedObject, meshFilter);
 			}
 
-			if (centerNavmesh)
+			if (PivotSettings.centerNavmesh)
 			{
 				NavMeshHandle.SetNavmesh(SelectedObject, pivotPosition);
 			}
@@ -142,6 +144,21 @@ namespace DeTools.PivotTool.Service
 		public static void SetnewMesh(Mesh mesh)
 		{
 			Selection.activeTransform.GetComponent<MeshFilter>().sharedMesh = mesh;
+		}
+
+		public static void SetMeshRotation(MeshFilter meshFilter, Quaternion pivotRotation)
+		{
+			meshFilter.transform.rotation = pivotRotation;
+			Vector3[] vertices = meshFilter.sharedMesh.vertices;
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				vertices[i] = pivotRotation * vertices[i];
+			}
+			meshFilter.sharedMesh.vertices = vertices;
+
+			meshFilter.sharedMesh.RecalculateNormals();
+			meshFilter.sharedMesh.RecalculateBounds();
+			meshFilter.sharedMesh.Optimize();
 		}
 	}
 }

@@ -25,12 +25,12 @@ namespace DeTools.PivotTool.Handlers
         /// <summary>
         /// string that contains "Handle "
         /// </summary>
-        private const string _HANDLETEXT = "Handle ";
+        const string handleText = "Handle ";
 
 		/// <summary>
 		/// string that contains "Center Position"
 		/// </summary>
-		const string CENTERPOSITIONTEXT = "Center Position";
+		const string CenterPositionText = "Center Position";
         /// <summary>
         /// drawscene function wil be drawn by the sceneguimanager
         /// </summary>
@@ -65,7 +65,7 @@ namespace DeTools.PivotTool.Handlers
         /// </summary>
         public static void SetCenter()
         {
-            PositionHandle.targetPosition = CalculateCenter();
+            PositionHandle.TargetPosition = CalculateCenter();
 
         }
 
@@ -109,7 +109,7 @@ namespace DeTools.PivotTool.Handlers
                 for (int i = 0; i < position.Count; i++)
                 {
                     tempList.Add(Handles.PositionHandle(position[i], Quaternion.identity));
-                    Handles.Label(position[i], _HANDLETEXT + (i + 1).ToString());
+                    Handles.Label(position[i], handleText + (i + 1).ToString());
                 }
 
                 if (EditorGUI.EndChangeCheck())
@@ -123,12 +123,12 @@ namespace DeTools.PivotTool.Handlers
                 if (center != Vector3.zero)
                 {
                     Handles.PositionHandle(center, Quaternion.identity);
-                    Handles.Label(center, CENTERPOSITIONTEXT);
+                    Handles.Label(center, CenterPositionText);
                 }
             }
             else
             {
-                if (!PositionHandle.showPositionTool)
+                if (!PositionHandle.ShowPositionTool)
                 {
                     Tools.hidden = false;
                 }

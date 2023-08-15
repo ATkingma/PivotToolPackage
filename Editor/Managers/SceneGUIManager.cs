@@ -10,7 +10,7 @@ namespace DeTools.PivotTool.Manager
     /// <summary>
     /// draws al the scene ui
     /// </summary>
-    [CustomEditor(typeof(GameObject)), CanEditMultipleObjects]
+    [CustomEditor(typeof(MeshFilter))]
     public class SceneGUIManager : Editor
     {
         private void OnSceneGUI()

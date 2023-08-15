@@ -4,6 +4,8 @@ using DeTools.PivotTool.Service;
 using DeTools.PivotTool.Window;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Scene = UnityEngine.SceneManagement.Scene;
 
 namespace DeTools.PivotTool.UIVieuwer
 {
@@ -58,15 +60,64 @@ namespace DeTools.PivotTool.UIVieuwer
 		private static bool ExportTab = true;
 
 		/// <summary>
+		/// foldout boolean
+		/// </summary>
+		private static bool CopyTab = true;
+
+		public static Object source;
+
+		/// <summary>
 		/// draws the ui of pivtoolmain class
 		/// </summary>
 		public static void DrawUI()
 		{
 			EnableButton();
+			EnableRotationButton();
 			if (CheckIfSelected())
 			{
 				SetPivotButton(20);
 
+				PivotToolEditor.AddHorizontalLine(Color.black);
+				CopyTab = EditorGUILayout.Foldout(CopyTab, "CopyPivotPosition");
+				if (CopyTab)
+				{
+					source = EditorGUILayout.ObjectField(source, typeof(GameObject), true);
+
+					if (source != null)
+					{
+						// Get the active scene
+						Scene currentScene = SceneManager.GetActiveScene();
+
+						// Find all root GameObjects in the scene
+						GameObject[] rootObjects = currentScene.GetRootGameObjects();
+
+						bool foundInScene = false;
+
+						// Check if the source GameObject is in the scene's hierarchy
+						for (int i = 0; i < rootObjects.Length; i++)
+						{
+							if (IsInHierarchy((GameObject)source, rootObjects[i]))
+							{
+								foundInScene = true;
+								break;
+							}
+						}
+
+						if (!foundInScene)
+						{
+							Debug.LogWarning("Please only use objects inside the currently open scene.");
+							source = null;
+						}
+						
+						GUILayout.Space(5);
+                        if (GUILayout.Button("Set Position to selected object."))
+                        {
+							GameObject tempob = (GameObject)source;
+							PivotService.SetPivot(tempob.transform.position, tempob.transform.rotation);
+						}
+					}
+				}	
+				
 				PivotToolEditor.AddHorizontalLine(Color.black);
 				ExportTab = EditorGUILayout.Foldout(ExportTab, ExportTabName);
 				if (ExportTab)
@@ -84,16 +135,32 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// </summary>
 		private static void EnableButton()
 		{
-			string buttonState = PositionHandle.showPositionTool ? isOff : isOn;
+			string buttonState = PositionHandle.ShowPositionTool ? isOff : isOn;
 
 			if (GUILayout.Button(buttonState + ButtonText))
 			{
-				if (Selection.activeTransform != null)
-				{
-					PositionHandle.showPositionTool = !PositionHandle.showPositionTool;
-					PositionHandle.ResetValues();
-					PositionHandle.targetPosition = Selection.activeTransform.position;
-				}
+				PositionHandle.ShowPositionTool = !PositionHandle.ShowPositionTool;
+				PositionHandle.ResetPosition();
+				if(Selection.activeTransform!=null)
+					PositionHandle.TargetPosition = Selection.activeTransform.position;
+
+			}
+		}
+		
+		/// <summary>
+		/// enable button handles if the tool shows an pivto the user can move
+		/// </summary>
+		private static void EnableRotationButton()
+		{
+			string buttonState = PositionHandle.ShowRotationTool ? isOff : isOn;
+
+			if (GUILayout.Button(buttonState + "Rotation"))
+			{
+				PositionHandle.ShowRotationTool = !PositionHandle.ShowRotationTool;
+				PositionHandle.ResetRotation();
+				if(Selection.activeTransform!=null)
+					PositionHandle.TargetRotation = Selection.activeTransform.rotation;
+
 			}
 		}
 
@@ -105,7 +172,7 @@ namespace DeTools.PivotTool.UIVieuwer
 		{
 			if (GUILayout.Button(SetPivotText,GUILayout.Height(height)))
 			{
-				PivotService.SetPivot(PositionHandle.targetPosition, PivotSettings.centerCollider, PivotSettings.centerNavmesh);
+				PivotService.SetPivot(PositionHandle.TargetPosition, PositionHandle.TargetRotation);
 			}
 		}
 
@@ -170,6 +237,29 @@ namespace DeTools.PivotTool.UIVieuwer
 				return false;
 			}
 			return true;
+		}
+
+		/// <summary>
+		/// Checks if object is in scene.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="parent"></param>
+		/// <returns></returns>
+		static bool IsInHierarchy(GameObject target, GameObject parent)
+		{
+			Transform targetTransform = target.transform;
+
+			while (targetTransform != null)
+			{
+				if (targetTransform.gameObject == parent)
+				{
+					return true;
+				}
+
+				targetTransform = targetTransform.parent;
+			}
+
+			return false;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using DeTools.PivotTool.Handlers;
+using DeTools.PivotTool.Window;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace DeTools.PivotTool.UIVieuwer
 	/// <summary>
 	/// PivotMovement contains the ui tab that manages the position of the pivot by sliders or other calculations
 	/// </summary>
-	public class PivotMovement
+	public class PivotUtilitys
 	{
 		/// <summary>
 		/// is an string that contains "ResetPosition"
@@ -18,8 +19,6 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// is an string that contains "Center Pivot Position"
 		/// </summary>
 		const string centerPivotText = "Center Pivot Position";
-
-
 		/// <summary>
 		///  is an string that contains "General"
 		/// </summary>
@@ -31,7 +30,11 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// <summary>
 		///  is an string that contains "Sliders"
 		/// </summary>
-		const string sliderText = "Sliders";
+		const string positionSliderText = "Position Sliders";
+		/// <summary>
+		///  is an string that contains "Sliders"
+		/// </summary>
+		const string rotationSliderText = "Rotation Sliders";
 		/// <summary>
 		///  is an string that contains "Buttons"
 		/// </summary>
@@ -41,20 +44,20 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// <summary>
 		///  is an string that contains "Gizmo X: "
 		/// </summary>
-		const string gizmoX = "Gizmo X: ";
+		const string gizmoX = "X: ";
 		/// <summary>
 		///  is an string that contains "Gizmo Y: "
 		/// </summary>
-		const string gizmoY = "Gizmo Y: ";
+		const string gizmoY = "Y: ";
 		/// <summary>
 		///  is an string that contains "Gizmo Z: "
 		/// </summary>
-		const string gizmoZ = "Gizmo Z: ";
+		const string gizmoZ = "Z: ";
 
 		/// <summary>
 		/// contains the space that is between the movement sliders
 		/// </summary>
-		const float spaceBetweenSlider = 10;
+		const float spaceBetweenSlider = 15;
 		/// <summary>
 		/// this is the lenght of the sliders also the - so by default its  -25 0 +25
 		/// </summary>
@@ -63,7 +66,7 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// <summary>
 		/// foldout boolean
 		/// </summary>
-		private static bool generalMoveOptions = true, multiPivotTool = true,pivotSlider = true,pivotButtons = true;
+		private static bool generalMoveOptions = true, multiPivotTool = true,positionSliders = true, rotationSliders = true, pivotButtons = true;
 
 		/// <summary>
 		/// Draws the ui of the pivotmovement class
@@ -102,12 +105,24 @@ namespace DeTools.PivotTool.UIVieuwer
 			GUILayout.BeginHorizontal();
 			GUILayout.Space(4);
 
-			pivotSlider = EditorGUILayout.Foldout(pivotSlider, sliderText);
+			positionSliders = EditorGUILayout.Foldout(positionSliders, positionSliderText);
 			GUILayout.EndHorizontal();
-			if (pivotSlider)
+			if (positionSliders)
 			{
 				DrawPositionSliders();
+				GUILayout.Space(10);
+				PivotToolEditor.AddHorizontalLine(Color.black);
+			}
+
+			GUILayout.BeginHorizontal();
+
+			rotationSliders = EditorGUILayout.Foldout(rotationSliders, rotationSliderText);
+			GUILayout.EndHorizontal();
+			if (rotationSliders)
+            {
+				DrawRotationSliders();
 				GUILayout.Space(20);
+				PivotToolEditor.AddHorizontalLine(Color.black);
 			}
 
 			GUILayout.BeginHorizontal();
@@ -128,7 +143,7 @@ namespace DeTools.PivotTool.UIVieuwer
 				if (GUILayout.Button(resetPosText))
 				{
 					GameObject targetObject = Selection.activeTransform.gameObject;
-					PositionHandle.targetPosition = targetObject.transform.position;
+					PositionHandle.TargetPosition = targetObject.transform.position;
 				}
 			}
 
@@ -166,22 +181,45 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// </summary>
 		private static void DrawPositionSliders()
 		{
-			PositionHandle.targetPosition = new Vector3(
-			DrawSlider(gizmoX + PositionHandle.targetPosition.x,
-			PositionHandle.targetPosition.x, spaceBetweenSlider, lenghtOfSlider),
-			PositionHandle.targetPosition.y, PositionHandle.targetPosition.z);
+			float x = DrawFloatFields(gizmoX,PositionHandle.TargetPosition.x, spaceBetweenSlider);
+			PositionHandle.TargetPosition = new Vector3(x,PositionHandle.TargetPosition.y, PositionHandle.TargetPosition.z);
+			x = DrawSlider(PositionHandle.TargetPosition.x, spaceBetweenSlider, -lenghtOfSlider, lenghtOfSlider);
+			PositionHandle.TargetPosition = new Vector3(x, PositionHandle.TargetPosition.y, PositionHandle.TargetPosition.z);
 
 
-			PositionHandle.targetPosition = new Vector3(
-			PositionHandle.targetPosition.x,
-			DrawSlider(gizmoY + PositionHandle.targetPosition.y, PositionHandle.targetPosition.y, spaceBetweenSlider, lenghtOfSlider),
-			PositionHandle.targetPosition.z);
+			float y = DrawFloatFields(gizmoY, PositionHandle.TargetPosition.y, spaceBetweenSlider);
+			PositionHandle.TargetPosition = new Vector3(x,y, PositionHandle.TargetPosition.z);
+			y = DrawSlider(PositionHandle.TargetPosition.y, spaceBetweenSlider, -lenghtOfSlider, lenghtOfSlider);
+			PositionHandle.TargetPosition = new Vector3(x,y, PositionHandle.TargetPosition.z);
 
 
-			PositionHandle.targetPosition = new Vector3(
-			PositionHandle.targetPosition.x,
-			PositionHandle.targetPosition.y,
-			DrawSlider(gizmoZ + PositionHandle.targetPosition.z, PositionHandle.targetPosition.z, spaceBetweenSlider, lenghtOfSlider));
+			float z = DrawFloatFields(gizmoZ, PositionHandle.TargetPosition.z, spaceBetweenSlider);
+			PositionHandle.TargetPosition = new Vector3(x, y, z);
+			z = DrawSlider(PositionHandle.TargetPosition.z, spaceBetweenSlider, -lenghtOfSlider, lenghtOfSlider);
+			PositionHandle.TargetPosition = new Vector3(x, y, z);
+		}
+
+		/// <summary>
+		/// Draws the rotation sliders
+		/// </summary>
+		private static void DrawRotationSliders()
+		{
+			float x = DrawFloatFields(gizmoX, PositionHandle.TargetRotation.eulerAngles.x, spaceBetweenSlider);
+			PositionHandle.TargetRotation = Quaternion.Euler(new Vector3(x, PositionHandle.TargetRotation.eulerAngles.y, PositionHandle.TargetRotation.eulerAngles.z));
+			x = DrawSlider(PositionHandle.TargetRotation.eulerAngles.x, spaceBetweenSlider,0, 90);
+			PositionHandle.TargetRotation = Quaternion.Euler(new Vector3(x, PositionHandle.TargetRotation.eulerAngles.y, PositionHandle.TargetRotation.eulerAngles.z));
+
+
+			float y = DrawFloatFields(gizmoY, PositionHandle.TargetRotation.eulerAngles.y, spaceBetweenSlider);
+			PositionHandle.TargetRotation = Quaternion.Euler(new Vector3(x, y, PositionHandle.TargetRotation.eulerAngles.z));
+			y = DrawSlider( PositionHandle.TargetRotation.eulerAngles.y, spaceBetweenSlider,0, 360);
+			PositionHandle.TargetRotation = Quaternion.Euler(new Vector3(x, y, PositionHandle.TargetRotation.eulerAngles.z));
+
+
+			float z = DrawFloatFields(gizmoZ, PositionHandle.TargetRotation.eulerAngles.z, spaceBetweenSlider);
+			PositionHandle.TargetRotation = Quaternion.Euler(new Vector3(x, y, z));
+			z = DrawSlider(PositionHandle.TargetRotation.eulerAngles.z, spaceBetweenSlider, 0,360);
+			PositionHandle.TargetRotation = Quaternion.Euler(new Vector3(x, y, z));
 		}
 
 		/// <summary>
@@ -199,7 +237,7 @@ namespace DeTools.PivotTool.UIVieuwer
 			}
 			Vector3 localScale = Selection.activeTransform.localScale;
 			center = Vector3.Scale(center, localScale);
-			PositionHandle.targetPosition = center + Selection.activeTransform.position;
+			PositionHandle.TargetPosition = center + Selection.activeTransform.position;
 		}
 
 		/// <summary>
@@ -216,14 +254,34 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// <param name="name"></param>
 		/// <param name="value"></param>
 		/// <param name="spaceAmount"></param>
-		/// <param name="sliderValue"></param>
+		/// <param name="maxSliderValue"></param>
+		/// <param name="minSliderValue"></param>
 		/// <returns>returns the outcome of the slider</returns>
-		private static float DrawSlider(string name, float value, float spaceAmount, float sliderValue)
+		private static float DrawSlider(float value, float spaceAmount, float minSliderValue, float maxSliderValue)
 		{
-			GUILayout.Label(name);
-			float returnValue = GUILayout.HorizontalSlider(value, -sliderValue, sliderValue);
+			float returnFloat = value;
+			returnFloat = GUILayout.HorizontalSlider(value, minSliderValue, maxSliderValue);
 			GUILayout.Space(spaceAmount);
-			return (float)Math.Round(returnValue * 100f) / 100f; ;
+			return (float)Math.Round(returnFloat * 100f) / 100f;
+		}
+
+		/// <summary>
+		/// draws an slider
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		/// <param name="spaceAmount"></param>
+		/// <returns></returns>
+		private static float DrawFloatFields(string name, float value, float spaceAmount)
+        {
+			float returnFloat = value;
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(spaceAmount);
+			GUILayout.Label(name);
+			returnFloat = EditorGUILayout.FloatField(returnFloat);
+			GUILayout.Space(10);
+			GUILayout.EndHorizontal();
+			return (float)Math.Round(returnFloat * 100f) / 100f;
 		}
 	}
 }

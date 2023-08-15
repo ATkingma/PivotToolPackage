@@ -48,16 +48,21 @@ namespace DeTools.PivotTool.Handlers
         /// <summary>
         /// this is an bool that will be set when the position needs to be shown and may move
         /// </summary>
-        public static bool showPositionTool;
+        public static bool ShowPositionTool; 
+		
+		/// <summary>
+        /// this is an bool that will be set when the Rotation needs to be shown and may move
+        /// </summary>
+        public static bool ShowRotationTool;
 		/// <summary>
 		/// this is an bool that will be set when input is received an vertex snapping can be used
 		/// </summary>
-		public static bool vertSnapping;
+		public static bool VertSnapping;
 
 		/// <summary>
 		/// the position of the new pivot
 		/// </summary>
-		public static Vector3 targetPosition { get { return m_TargetPosition; } set { m_TargetPosition = value; } }
+		public static Vector3 TargetPosition { get { return m_TargetPosition; } set { m_TargetPosition = value; } }
 
 		/// <summary>
 		/// the private value of the new pivot
@@ -73,10 +78,20 @@ namespace DeTools.PivotTool.Handlers
 		/// </summary>
 		private static GameObject oldObject = null;
 
-        /// <summary>
-		/// within this function some variables will be reset because of user experience
+		/// <summary>
+		/// the position of the new pivot
 		/// </summary>
-        public static void ResetValues()
+		public static Quaternion TargetRotation { get { return m_TargetRotation; } set { m_TargetRotation = value; } }
+
+		/// <summary>
+		/// the private value of the new pivot
+		/// </summary>
+		private static Quaternion m_TargetRotation = Quaternion.identity;
+
+		/// <summary>
+		/// within this function some the position will be reset because of user experience
+		/// </summary>
+		public static void ResetPosition()
 		{
 			m_TargetPosition = Vector3.zero;
 			if (Selection.activeTransform == null)
@@ -84,14 +99,35 @@ namespace DeTools.PivotTool.Handlers
 				return;
 			}
 			GameObject targetObject = Selection.activeTransform.gameObject;
+			if (targetObject == null)
+			{
+				return;
+			}
+			m_TargetPosition = targetObject.transform.position;
+			if (oldObject != targetObject)
+			{
+				TargetPosition = targetObject.gameObject.transform.position;
+				m_TargetRotation = targetObject.gameObject.transform.rotation;
+			}
+		}
 
+		/// <summary>
+		/// within this function some the rotation will be reset because of user experience
+		/// </summary>
+		public static void ResetRotation()
+		{
+			if (Selection.activeTransform == null)
+			{
+				return;
+			}
+			GameObject targetObject = Selection.activeTransform.gameObject;
 			if (targetObject == null)
 			{
 				return;
 			}
 			if (oldObject != targetObject)
 			{
-				targetPosition = targetObject.gameObject.transform.position;
+				m_TargetRotation = targetObject.gameObject.transform.rotation;
 			}
 		}
 
@@ -100,7 +136,7 @@ namespace DeTools.PivotTool.Handlers
 		/// </summary>
 		public static void DrawScene()
 		{
-			if (showPositionTool)
+			if (ShowPositionTool)
 			{
 
 				if (Selection.activeTransform == null)
@@ -117,15 +153,11 @@ namespace DeTools.PivotTool.Handlers
 
 				CheckInput(targetObject);
 
-				if (CheckOldObject(targetObject))
+				if (CheckOldObject(targetObject)||Selection.activeTransform==null|| (Selection.activeTransform.GetComponent<MeshFilter>()==null))
 				{
 					return;
 				}
-				if (!Selection.activeTransform.GetComponent<MeshFilter>())
-				{
-					Debug.LogError("Please add an MeshFilter to the object");
-					return;
-				}
+
 				UndoRedoPivot.AddNewPivot(Selection.activeTransform.GetComponent<MeshFilter>().sharedMesh);
 			}
 			else
@@ -147,19 +179,27 @@ namespace DeTools.PivotTool.Handlers
 			EditorGUI.BeginChangeCheck();
 
 			Handles.PositionHandle(targetObject.transform.position, Quaternion.identity);
+
 			Handles.Label(targetObject.transform.position, oldPos);
 
 			GUI.color = Color.green;
-            Vector3 newTargetPosition = Handles.PositionHandle(targetPosition, Quaternion.identity);
 
-            if (EditorGUI.EndChangeCheck())
+            if (ShowRotationTool)
+            {
+				Quaternion newTargetRotation = Handles.RotationHandle(m_TargetRotation, TargetPosition);
+				m_TargetRotation = newTargetRotation;
+            }
+
+            Vector3 newTargetPosition = Handles.PositionHandle(TargetPosition, m_TargetRotation);
+
+			if (EditorGUI.EndChangeCheck())
 			{
 				if(Vector3.Distance(latestSaved, newTargetPosition) > UndoRedoPosition.undoRedoDistance)
 				{
 					latestSaved = newTargetPosition;
 					UndoRedoPosition.SavePosition(latestSaved);
 				}
-                targetPosition = newTargetPosition;
+                TargetPosition = newTargetPosition;
 			}
 			Handles.Label(newTargetPosition, newPos);
 
@@ -182,6 +222,12 @@ namespace DeTools.PivotTool.Handlers
 				offset += new Vector3(0, 0.2f, 0);
 				Handles.Label(newTargetPosition + offset, distanceText + Vector3.Distance(targetObject.transform.position, newTargetPosition).ToString());
 			}
+
+            if (PivotSettings.newRotationInfo)
+            {
+				offset += new Vector3(0, 0.2f, 0);
+				Handles.Label(newTargetPosition + offset, "Rotation" + m_TargetRotation.eulerAngles.ToString());
+			}
 		}
 
 		/// <summary>
@@ -191,7 +237,8 @@ namespace DeTools.PivotTool.Handlers
 		{
 			if (oldObject != targetObject)
 			{
-				ResetValues();
+				ResetPosition();
+				ResetRotation();
 				oldObject = targetObject;
 				return true;
 			}
@@ -214,21 +261,22 @@ namespace DeTools.PivotTool.Handlers
 				if (e.character.ToString() == vertexSnapInput)
 				{
 					Mesh targetMesh = targetObject.GetComponent<MeshFilter>().sharedMesh;
+
 					if (targetMesh == null || targetObject == null)
 					{
 						return;
 					}
-					Vector3 closestVertex = GetClosestVertex(targetMesh, targetPosition, targetObject.transform.position, targetObject.transform.localScale);
+					Vector3 closestVertex = GetClosestVertex(targetMesh, TargetPosition, targetObject.transform.position, targetObject.transform.localScale);
 
-					targetPosition = closestVertex;
+					TargetPosition = closestVertex;
 				}
 				if (e.character.ToString() == undoInput)
 				{
-					targetPosition = UndoRedoPosition.ReturnPosition(targetPosition);
+					TargetPosition = UndoRedoPosition.ReturnPosition(TargetPosition);
 				}
 				else if (e.character.ToString() == redoInput)
 				{
-					targetPosition = UndoRedoPosition.ReturnRedoPosition();
+					TargetPosition = UndoRedoPosition.ReturnRedoPosition();
 				}
                 
             }

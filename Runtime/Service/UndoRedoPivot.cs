@@ -5,7 +5,7 @@ using UnityEngine;
 namespace DeTools.PivotTool.Service
 {
 	/// <summary>
-	/// undoRedoPivot contains everything to undo/redo the pivot position
+	/// undoRedoPivot contains eveything to undo/redo the pivot position
 	/// </summary>
 	public class UndoRedoPivot
 	{

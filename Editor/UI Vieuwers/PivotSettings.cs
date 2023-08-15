@@ -29,6 +29,10 @@ namespace DeTools.PivotTool.UIVieuwer
 		/// <summary>
 		/// setting boolean that wil be used in an toggle
 		/// </summary>
+		public static bool newRotationInfo { get; private set; } = false;
+		/// <summary>
+		/// setting boolean that wil be used in an toggle
+		/// </summary>
 		public static bool oldPositionInfo { get; private set; } = false;
 
 		/// <summary>
@@ -99,7 +103,7 @@ namespace DeTools.PivotTool.UIVieuwer
 			pivotMovement = EditorGUILayout.Foldout(pivotMovement, pivotMovementText);
 			if (pivotMovement)
 			{
-				PivotMovement.lenghtOfSlider = FloatInputField(sliderLenght, PivotMovement.lenghtOfSlider);
+				PivotUtilitys.lenghtOfSlider = FloatInputField(sliderLenght, PivotUtilitys.lenghtOfSlider);
 			}
 			undoRedoSaves = EditorGUILayout.Foldout(undoRedoSaves, undoRedoSavesText);
 			if (undoRedoSaves)
@@ -113,6 +117,7 @@ namespace DeTools.PivotTool.UIVieuwer
 				useDistanceInfo = GUILayout.Toggle(useDistanceInfo, DistanceInfoText);
 				oldPositionInfo = GUILayout.Toggle(oldPositionInfo, oldPosInfoText);
 				newPositionInfo = GUILayout.Toggle(newPositionInfo, newPosInfoText);
+				newRotationInfo = GUILayout.Toggle(newRotationInfo, "Use New Rotation");
 			}
 
 			componentSettings = EditorGUILayout.Foldout(componentSettings, componantText);
